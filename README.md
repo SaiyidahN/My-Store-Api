@@ -8,6 +8,7 @@ The "ThreadAndDaringStore" API is an ASP.NET Core Web API designed to manage an 
 
 
 Technical Implementation:
+
 -Built with Entity Framework Core for data access.
 
 -Uses a PostgreSQL database, which can be hosted locally or via Neon.tech.
@@ -16,6 +17,7 @@ Technical Implementation:
 
 
 Getting Started:
+
 -Clone the repository.
 
 -Configure the database connection in appsettings.json.
