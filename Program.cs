@@ -1,18 +1,17 @@
-using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using ThreadAndDaringStore.Data;
-using ThreadAndDaringStore.Models;
 using ThreadAndDaringStore.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//Register DbContext
-// Add services to the container.
-builder.Services.AddDbContext<ThreadAndDaringStoreContext>(Options => Options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Register DbContext
+builder.Services.AddDbContext<ThreadAndDaringStoreContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers();
 
-//Register your services here
+// Register Services
 builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<CartService>();
@@ -20,18 +19,24 @@ builder.Services.AddScoped<CartItemsService>();
 builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<OrderItemService>();
 builder.Services.AddScoped<UserService>();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+
+// Add Swagger
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "ThreadAndDaringStore", Version = "v1" });
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
+// Use Swagger
 app.UseHttpsRedirection();
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "ThreadAndDaringStore v1");
+});
 
 app.UseAuthorization();
 
